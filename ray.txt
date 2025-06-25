@@ -1,0 +1,6 @@
+Flask
+web3
+bit
+requests
+block-io
+python-dotenv
