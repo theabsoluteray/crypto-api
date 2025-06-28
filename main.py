@@ -75,7 +75,7 @@ def get_balance(coin):
     return jsonify({'error': 'Unsupported coin'}), 400
 
 @app.route('/send/<coin>', methods=['POST'])
-def send_coin(coin):
+def send(coin):
     data = request.get_json()
     from_addr = data.get("from_address")
     to_addr = data.get("to_address")

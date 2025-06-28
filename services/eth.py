@@ -1,7 +1,7 @@
 from web3 import Web3
 import os
 from dotenv import load_dotenv
-from config import GAS_LIMIT_ETH, OVERRIDE_GAS_PRICE_GWEI
+from .config import GAS_LIMIT_ETH, OVERRIDE_GAS_PRICE_GWEI
 load_dotenv()
 
 INFURA_URL = os.getenv('INFURA_URL')

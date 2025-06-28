@@ -6,7 +6,7 @@ from litecoinutils.keys import PrivateKey
 from litecoinutils.transactions import Transaction, TxInput, TxOutput
 from litecoinutils.utils import to_satoshis
 
-from config import LTC_STATIC_FEE  # ✅ imported here
+from .config import LTC_STATIC_FEE  
 
 load_dotenv()
 setup('mainnet')
@@ -27,17 +27,26 @@ def create_wallet():
     }
 
 def get_balance(address):
-    url = f"{NOWNODES_BASE_URL}/v1/address/{address}"
-    res = requests.get(url, headers=HEADERS).json()
-    balance = res.get("balance", "0")
-    return float(balance)
+    url = f"https://api.blockcypher.com/v1/ltc/main/addrs/{address}/balance"
+    res = requests.get(url)
+
+    if res.status_code != 200:
+        return {"error": f"BlockCypher error: {res.status_code} - {res.text}"}
+
+    try:
+        data = res.json()
+        balance_litoshi = data.get("final_balance", 0)  # in litoshi (1 LTC = 100,000,000 litoshi)
+        return {"balance": balance_litoshi / 1e8}
+    except Exception as e:
+        return {"error": f"JSON decode error: {str(e)}"}
+
 
 def send_ltc(private_key, to_address, amount):
     try:
         priv = PrivateKey(wif=private_key)
         from_address = priv.get_public_key().get_address().to_string()
 
-        # Fetch UTXOs
+      
         utxo_url = f"{NOWNODES_BASE_URL}/v1/utxo/{from_address}"
         utxos = requests.get(utxo_url, headers=HEADERS).json()
 
@@ -58,7 +67,7 @@ def send_ltc(private_key, to_address, amount):
 
         tx_outputs = [TxOutput(to_satoshis(amount), to_address)]
 
-        # Add change output
+       
         change = total_input - amount - LTC_STATIC_FEE
         if change > 0:
             change_address = from_address

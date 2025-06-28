@@ -1,5 +1,5 @@
 from bit import Key, network
-from config import BTC_STATIC_FEE
+from .config import BTC_STATIC_FEE
 def create_wallet():
     key = Key()
     return {
