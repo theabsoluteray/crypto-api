@@ -12,8 +12,6 @@
 ## ✨ Features
 
 - 📤 Send BTC, ETH, or LTC using private keys
-- 📥 Receive and check balance with live USD value
-- 💵 Accept `amount_usd` to auto-convert to crypto
 - 📈 Uses real-time prices via [CoinGecko API](https://www.coingecko.com/)
 - 🔐 Wallet management (JSON-based)
 - 📝 Logs transactions in `transactions.txt`
