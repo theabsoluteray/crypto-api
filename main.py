@@ -85,7 +85,7 @@ def send_coin(coin):
     if not private_key:
         return jsonify({"error": "Wallet not found"}), 404
 
-    # Perform the transfer
+  
     if coin == "btc":
         txid = btc.send_transaction(from_addr, to_addr, amount, private_key)
     elif coin == "eth":
@@ -95,7 +95,7 @@ def send_coin(coin):
     else:
         return jsonify({"error": "Unsupported coin"}), 400
 
-    # Log the explorer link
+   
     log_transaction(coin, txid)
 
     return jsonify({
@@ -103,6 +103,38 @@ def send_coin(coin):
         "txid": txid,
         "explorer": f"{coin.upper()} TX: logged in transactions.txt"
     })
+
+@app.route('/receive', methods=['POST'])
+def receive():
+    data = request.get_json()
+    coin = data.get("coin")
+    address = data.get("address")
+
+    if not coin or not address:
+        return jsonify({"error": "coin and address are required"}), 400
+
+    try:
+        if coin == "eth":
+            balance = eth.get_balance(address)
+
+        elif coin == "btc":
+            balance = btc.get_balance(address)
+
+        elif coin == "ltc":
+            balance = ltc.get_balance(address)
+
+        else:
+            return jsonify({"error": f"{coin.upper()} not supported"}), 400
+
+        return jsonify({
+            "status": "success",
+            "coin": coin.upper(),
+            "address": address,
+            "balance": str(balance)
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/price/<coin>')
