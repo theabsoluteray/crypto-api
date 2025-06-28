@@ -3,6 +3,7 @@ bin
 include
 lib
 lib64
+share
 pyvenv.cfg
 .env
 bleh.py
